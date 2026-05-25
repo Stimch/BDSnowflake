@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bdsnowflake-db
+    environment:
+      POSTGRES_USER: lab
+      POSTGRES_PASSWORD: lab
+      POSTGRES_DB: petshop
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/data:ro
+      - ./sql:/sql:ro
+      - ./docker/init/99-run-lab.sh:/docker-entrypoint-initdb.d/99-run-lab.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lab -d petshop"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
